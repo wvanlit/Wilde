@@ -22,7 +22,8 @@ verbose_logging = None
 @click.option('--output', '-o', type=click.Path(exists=True), default='.', help='Path for the output files.')
 @click.option('--verbose', '-v', is_flag=True, help='Output verbose logging information.')
 @click.option('--minimal_duration', '-md', default=5, help='Minimal duration music has t be when exporting')
-def find_music_in_file(path, file_type, size, output, verbose, minimal_duration):
+@click.option('--join_distance', '-jd', default=5, help='The maximum time between joined segments')
+def find_music_in_file(path, file_type, size, output, verbose, minimal_duration, join_distance):
     global verbose_logging
     verbose_logging = verbose
 
@@ -32,10 +33,10 @@ def find_music_in_file(path, file_type, size, output, verbose, minimal_duration)
 
     # Detect music fragments
     music_segments = extract_music_from_segments(audio_files, size)
-
+    joined_music_segments = join_nearby_segments(music_segments, distance_in_seconds=join_distance)
     # Export music fragments
     export_music_segments(
-            music_segments, 
+            joined_music_segments, 
             click.format_filename(path), 
             file_type, 
             click.format_filename(output),
@@ -99,6 +100,18 @@ def extract_music_from_segments(audio_files, segment_size):
         log(f'Chunk {index+1} out of {len(audio_files)} classified...')
     log('Classification done', verbose=False)
     return music_segments
+
+def join_nearby_segments(music_segments, distance_in_seconds=5):
+    joined_segments = []
+    for index, (start, end) in enumerate(music_segments):
+        if index != 0:
+            prev_end = joined_segments[:-1][1]
+            if prev_end+distance_in_seconds > start:
+                joined_segments[:-1][1] = end
+            else:
+                joined_segments.append((start, end))
+        else:
+            joined_segments.append((start, end))
 
 def export_music_segments(music_segments, audio_path, file_type, output_path, minimal_duration=5): 
     log('Starting music segment export', verbose=False)
