@@ -1,3 +1,8 @@
+from warnings import simplefilter
+
+simplefilter(action='ignore', category=FutureWarning)
+simplefilter(action='ignore', category=RuntimeWarning)
+
 import click
 import os
 import shutil
@@ -16,6 +21,7 @@ verbose_logging = None
 @click.option('--output', '-o', type=click.Path(exists=True), default='.', help='Path for the output files.')
 @click.option('--verbose', '-v', default=True, help='Output verbose logging information.')
 def find_music_in_file(path, file_type, size, output, verbose):
+    global verbose_logging
     verbose_logging = verbose
 
     # Segment audio
@@ -23,7 +29,7 @@ def find_music_in_file(path, file_type, size, output, verbose):
     audio_files = export_segments_to_files(audio_segments, file_type, click.format_filename(output))
 
     # Detect music fragments
-    music_segments = extract_music_from_segments(audio_files)
+    music_segments = extract_music_from_segments(audio_files, size)
 
     # Export music fragments
     export_music_segments(music_segments, output)
@@ -68,12 +74,22 @@ def export_segments_to_files(segments, file_type, output_path):
         file_names.append(file_name)
     return file_names
 
-def extract_music_from_segments(audio_files):
+def extract_music_from_segments(audio_files, segment_size):
+    log('Starting music classification')
+    seg = Segmenter(vad_engine='sm', detect_gender=False)
     music_segments = []
-    for audio in audio_files:
-        pass
+    for index, audio in enumerate(audio_files):
+        segmentation = seg(audio)
+        for (seg_type, start, end) in segmentation:
+            if seg_type == 'music':
+                offset = index*segment_size
+                music_segments.append((start+offset, end+offset))
+        log(f'Chunk {index} out of {len(audio_files)} classified...')
+    log('Classification done')
+    return music_segments
 
 def export_music_segments(music_segments, output_path):
+    print(music_segments)
     pass
 
 def remove_temporary_folder(output_path):
@@ -88,6 +104,8 @@ def log(text, verbose=True):
     timestamp = f'[{dateObj.hour:0>2d}:{dateObj.minute:0>2d}:{dateObj.second:0>2d}]'
     if (verbose and verbose_logging is True) or not verbose:
         print(f'{timestamp} {text}')
+    else:
+        print(verbose_logging)
 
 if __name__ == '__main__':
     find_music_in_file()
