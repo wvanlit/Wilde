@@ -1,12 +1,13 @@
 import click
-import logging
 import os
+import shutil
 
+from datetime import datetime
 from pydub import AudioSegment
 from inaSpeechSegmenter import Segmenter
 
 TEMPORARY_FOLDER_NAME = 'tmp/'
-
+verbose_logging = None
 
 @click.command()
 @click.argument('path', type=click.Path(exists=True))
@@ -15,8 +16,7 @@ TEMPORARY_FOLDER_NAME = 'tmp/'
 @click.option('--output', '-o', type=click.Path(exists=True), default='.', help='Path for the output files.')
 @click.option('--verbose', '-v', default=True, help='Output verbose logging information.')
 def find_music_in_file(path, file_type, size, output, verbose):
-    logging_level = logging.INFO if verbose else logging.WARNING
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging_level)
+    verbose_logging = verbose
 
     # Segment audio
     audio_segments = segment_audio(click.format_filename(path), file_type, size)
@@ -34,11 +34,11 @@ def find_music_in_file(path, file_type, size, output, verbose):
 def segment_audio(path, file_type, size_in_seconds):
     size_in_milliseconds = size_in_seconds * 1000
 
-    logging.info('Starting audio segmentation')
-    logging.info('Retrieving audio file')
+    log('Starting audio segmentation')
+    log('Retrieving audio file')
     full_file = get_audio_segment_from_file(path, file_type)    
 
-    logging.info(f'Splitting audio file in segements of {size_in_milliseconds}ms')
+    log(f'Splitting audio file in segements of {size_in_milliseconds}ms')
     return split_audio_segment(full_file, size_in_milliseconds)
 
 def get_audio_segment_from_file(path, file_type):
@@ -58,10 +58,9 @@ def split_audio_segment(input_audio, segment_size):
 def export_segments_to_files(segments, file_type, output_path):
     temporary_folder_path = os.path.join(output_path, TEMPORARY_FOLDER_NAME)
     if not os.path.exists(temporary_folder_path):
-        logging.info('Creating temporary folder')
-        os.makedirs(temporary_folder_path)
-        
-    logging.info('Exporting audio chunks to temporary folder')
+        log('Creating temporary folder')
+        os.makedirs(temporary_folder_path) 
+    log('Exporting audio chunks to temporary folder')
     file_names = []
     for index, audio in enumerate(segments):
         file_name = os.path.join(temporary_folder_path, f'chunk-{index}.{file_type}')
@@ -80,8 +79,15 @@ def export_music_segments(music_segments, output_path):
 def remove_temporary_folder(output_path):
     temporary_folder_path = os.path.join(output_path, TEMPORARY_FOLDER_NAME)
     if os.path.exists(temporary_folder_path):
-        logging.info('Remove temporary folder')
-        os.rmdir(temporary_folder_path)
+        log('Remove temporary folder')
+        shutil.rmtree(temporary_folder_path)
+
+def log(text, verbose=True):
+    """Custom logging since tensorflow interfers with python logging"""
+    dateObj = datetime.now()
+    timestamp = f'[{dateObj.hour:0>2d}:{dateObj.minute:0>2d}:{dateObj.second:0>2d}]'
+    if (verbose and verbose_logging is True) or not verbose:
+        print(f'{timestamp} {text}')
 
 if __name__ == '__main__':
     find_music_in_file()
