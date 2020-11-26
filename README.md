@@ -21,7 +21,7 @@ Options:
   --help                          Show this message and exit.
 ```
 ## Installation
-Download the latest release. Make sure you have python 3 installed.
+Download the latest release. Make sure you have python 3, ffmpeg and libsndfile installed.
 
 ### Ubuntu
 Unpack the release into a directory and run the following commands:
@@ -39,6 +39,18 @@ python setup.py install
 Installation might take a while, since it has to install multiple large machine learning libraries.
 
 ### Troubleshooting
+#### ffmpeg
+If you get errors such as `The system cannot find the file specified` you are missing ffmpeg. Do one of the following:
+
+* Install ffmpeg from http://www.ffmpeg.org/
+
+* If you are using `conda` then you can get the package from `conda-forge` by running:
+```
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install --yes --quiet ffmpeg  
+```
+
 #### Libsndfile
 If you get an error about missing libsndfile do one of the following:
 
