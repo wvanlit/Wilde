@@ -22,6 +22,7 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt --ignore-installed
       displayName: 'Install dependencies'
     
     - script: |
