@@ -1,4 +1,6 @@
 # Wilde
+[![Build Status](https://dev.azure.com/wilde-cli/Wilde/_apis/build/status/wvanlit.Wilde?branchName=main)](https://dev.azure.com/wilde-cli/Wilde/_build/latest?definitionId=1&branchName=main)
+
 Wilde is a command line tool to find and extract music from podcasts
 
 ```
