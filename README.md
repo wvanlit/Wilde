@@ -58,6 +58,11 @@ Then run the following command, replacing the link with your new link:
 ```
 python -m pip install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-2.3.0-cp38-cp38-manylinux2010_x86_64.whl
 ```
+#### PyTorch on Conda
+If you get an error regarding `torch` during the setup installation, try running the following command before running the setup again:
+```
+conda install pytorch
+```
 ## Using your GPU
 By default Wilde will not use your GPU. If you want to speed up Wilde, you have to enable GPU support for tensorflow. This can be done by following these instructions:
 
