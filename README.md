@@ -15,19 +15,20 @@ Options:
                                   Minimal duration music has t be when
                                   exporting
 
+  -jd, --join_distance INTEGER    The maximum time between joined segments
   --help                          Show this message and exit.
 ```
 ## Installation
 Download the latest release. 
-
 Make sure you have python 3 installed.
 
 Unpack the release into a directory and run the following command:
 ```
 python setup.py install
 ```
+Installation might take a while, since it has to install multiple large machine learning libraries.
 
-If you are missing `tensorflow` upon install, go to [tensorflow.org]() and get the link for your wheel package.
+If you are missing `tensorflow` upon install, go to [tensorflow.org](https://www.tensorflow.org/install/pip#package-location) and get the link for your wheel package.
 
 Then run the following command, replacing the link with your new link:
 ```
