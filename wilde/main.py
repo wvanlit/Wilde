@@ -21,7 +21,7 @@ verbose_logging = None
 @click.option('--size', '-s', default=600, help='Segmentation size in seconds. Defaults to 600.')
 @click.option('--output', '-o', type=click.Path(exists=True), default='.', help='Path for the output files.')
 @click.option('--verbose', '-v', is_flag=True, help='Output verbose logging information.')
-@click.option('--minimal_duration', '-md', default=5, help='Minimal duration music has t be when exporting')
+@click.option('--minimal_duration', '-md', default=5, help='Minimal duration audio has to be when exporting')
 @click.option('--join_distance', '-jd', default=5, help='The maximum time between joined segments')
 def find_music_in_file(path, file_type, size, output, verbose, minimal_duration, join_distance):
     global verbose_logging
@@ -105,13 +105,16 @@ def join_nearby_segments(music_segments, distance_in_seconds=5):
     joined_segments = []
     for index, (start, end) in enumerate(music_segments):
         if index != 0:
-            prev_end = joined_segments[:-1][1]
+            prev_start, prev_end = joined_segments[-1]
             if prev_end+distance_in_seconds > start:
-                joined_segments[:-1][1] = end
+                log(f'Joining {prev_start}/{prev_end} to {start}/{end}')
+                joined_segments.pop()
+                joined_segments.append((prev_start, end))
             else:
                 joined_segments.append((start, end))
         else:
             joined_segments.append((start, end))
+    return joined_segments
 
 def export_music_segments(music_segments, audio_path, file_type, output_path, minimal_duration=5): 
     log('Starting music segment export', verbose=False)
