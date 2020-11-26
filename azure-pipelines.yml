@@ -29,10 +29,10 @@ jobs:
         wilde --help
       displayName: 'Run help'
 
-    - script: |
-        pip install pytest pytest-azurepipelines
-        pytest
-      displayName: 'Unit Tests'
+    # - script: |
+    #     pip install pytest pytest-azurepipelines
+    #     pytest
+    #   displayName: 'Unit Tests'
 
 - job: WindowsSetup
   pool:
@@ -45,7 +45,7 @@ jobs:
         architecture: 'x64'
 
     - script: |
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade pip setuptools wheel
         python setup.py install
       displayName: 'Install dependencies'
 
@@ -53,10 +53,10 @@ jobs:
         wilde --help
       displayName: 'Run help'
 
-    - script: |
-        pip install pytest pytest-azurepipelines
-        pytest
-      displayName: 'Unit Tests'
+    # - script: |
+    #     pip install pytest pytest-azurepipelines
+    #     pytest
+    #   displayName: 'Unit Tests'
 
 
 
