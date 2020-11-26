@@ -15,7 +15,10 @@ steps:
     versionSpec: '3.8'
     addToPath: true
     architecture: 'x64'
-    
+
+- script: sudo apt-get install libsndfile1
+  displayName: 'Install libsndfile'
+
 - script: |
     python -m pip install --upgrade pip
     python setup.py install
