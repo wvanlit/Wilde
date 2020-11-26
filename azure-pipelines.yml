@@ -21,9 +21,12 @@ jobs:
       displayName: 'Install libsndfile'
 
     - script: |
-        python -m pip install --upgrade pip
-        python setup.py install
+        python -m pip install --upgrade pip setuptools wheel
       displayName: 'Install dependencies'
+    
+    - script: |
+        python setup.py install
+      displayName: 'Install Wilde'
 
     - script: |
         wilde --help
@@ -46,9 +49,12 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip setuptools wheel
-        python setup.py install
         pip install torch>=1.4 torchvision>=0.7 -f https://download.pytorch.org/whl/torch_stable.html
       displayName: 'Install dependencies'
+    
+    - script: |
+        python setup.py install
+      displayName: 'Install Wilde'
 
     - script: |
         wilde --help
