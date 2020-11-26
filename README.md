@@ -27,6 +27,14 @@ Unpack the release into a directory and run the following command:
 python setup.py install
 ```
 
+If you are missing `tensorflow` upon install, go to [tensorflow.org]() and get the link for your wheel package.
+
+Then run the following command, replacing the link with your new link:
+```
+python -m pip install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-2.3.0-cp38-cp38-manylinux2010_x86_64.whl
+```
+
+
 ## Using your GPU
 By default Wilde will not use your GPU. If you want to speed up Wilde, you have to enable GPU support for tensorflow. This can be done by following these instructions:
 [Windows Tutorial](https://towardsdatascience.com/installing-tensorflow-with-cuda-cudnn-and-gpu-support-on-windows-10-60693e46e781)
