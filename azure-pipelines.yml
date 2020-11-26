@@ -59,7 +59,7 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install torch==1.4 torchvision==0.5 -f https://download.pytorch.org/whl/torch_stable.html
+        conda install pytorch
       displayName: 'Install python dependencies'
     
     - script: |
