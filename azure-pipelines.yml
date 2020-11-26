@@ -38,42 +38,42 @@ jobs:
     #     pytest
     #   displayName: 'Unit Tests'
 
-- job: WindowsSetup
-  pool:
-    vmImage: 'windows-latest'
-  steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.8'
-        addToPath: true
-        architecture: 'x64'
+# - job: WindowsSetup
+#   pool:
+#     vmImage: 'windows-latest'
+#   steps:
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.8'
+#         addToPath: true
+#         architecture: 'x64'
 
-    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-      displayName: 'Add conda to PATH'
+#     - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+#       displayName: 'Add conda to PATH'
 
-    - script: |
-        conda config --add channels conda-forge
-        conda config --set channel_priority strict
-        conda install --yes --quiet libsndfile  
-      displayName: 'Add libsndfile dependency'
+#     - script: |
+#         conda config --add channels conda-forge
+#         conda config --set channel_priority strict
+#         conda install --yes --quiet libsndfile  
+#       displayName: 'Add libsndfile dependency'
 
-    - script: |
-        python -m pip install --upgrade pip setuptools wheel
-        conda install --yes --quiet pytorch
-      displayName: 'Install python dependencies'
+#     - script: |
+#         python -m pip install --upgrade pip setuptools wheel
+#         conda install --yes --quiet pytorch
+#       displayName: 'Install python dependencies'
     
-    - script: |
-        python setup.py install
-      displayName: 'Install Wilde'
+#     - script: |
+#         python setup.py install
+#       displayName: 'Install Wilde'
 
-    - script: |
-        wilde --help
-      displayName: 'Run help'
+#     - script: |
+#         wilde --help
+#       displayName: 'Run help'
 
-    # - script: |
-    #     pip install pytest pytest-azurepipelines
-    #     pytest
-    #   displayName: 'Unit Tests'
+#     # - script: |
+#     #     pip install pytest pytest-azurepipelines
+#     #     pytest
+#     #   displayName: 'Unit Tests'
 
 
 
